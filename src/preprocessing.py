@@ -28,7 +28,7 @@ def remove_digits(text):
 
 
 def reduce_elongation(text):
-    return re.sub(r"(.)\1{2,}", r"\1\1", text)
+    return re.sub(r"(\D)\1{2,}", r"\1", text)
 
 
 def remove_punctuation(text):
@@ -58,6 +58,8 @@ STEPS = {
     "light_stem": light_stem,
     "stem": stem,
 }
+
+NORM_STEPS = ["diacritics", "kashida", "letters", "elongation", "punctuation"]
 
 
 def build_pipeline(names=()):
