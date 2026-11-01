@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -10,7 +11,9 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
 CLEAN_DATA_DIR = DATA_DIR / "clean"
-MODELS_DIR = PROJECT_ROOT / "models"
+# On Colab this points to Drive, so results and models survive the session.
+OUTPUT_DIR = Path(os.environ.get("OUTPUT_DIR", PROJECT_ROOT))
+MODELS_DIR = OUTPUT_DIR / "models"
 
 RAW_PATHS = {
     "train": RAW_DATA_DIR / "AR_Hotels_Train_SB1.xml",
@@ -77,6 +80,12 @@ def load_train_val(seed: int = 42):
     opinions = load_opinions(CLEAN_TRAIN_PATH)
     train, val = split(sentences(opinions), seed=seed)
     return opinions, train, val
+
+
+def load_test():
+    """Clean test file -> (all opinions, sentences). Only for the sections written for Part F."""
+    opinions = load_opinions(CLEAN_TEST_PATH)
+    return opinions, sentences(opinions)
 
 
 def category_list(df: pd.DataFrame) -> list[str]:

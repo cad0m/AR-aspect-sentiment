@@ -7,6 +7,9 @@ isri = ISRIStemmer()
 light = ArabicLightStemmer()
 
 
+DIALECT_WORDS = ["مش", "مو", "بس", "كتير", "هيك", "ليش", "شو", "وايد", "مره", "زي", "دي", "كده", "عشان", "ازاي", "حلو"]
+
+
 def remove_diacritics(text):
     return re.sub(r"[ً-ْ]", "", text)
 
@@ -29,6 +32,10 @@ def remove_digits(text):
 
 def reduce_elongation(text):
     return re.sub(r"(\D)\1{2,}", r"\1", text)
+
+
+def remove_dialect_words(text):
+    return " ".join(word for word in text.split() if word not in DIALECT_WORDS)
 
 
 def remove_punctuation(text):
@@ -55,6 +62,7 @@ STEPS = {
     "digits": remove_digits,
     "elongation": reduce_elongation,
     "punctuation": remove_punctuation,
+    "dialect": remove_dialect_words,
     "light_stem": light_stem,
     "stem": stem,
 }
