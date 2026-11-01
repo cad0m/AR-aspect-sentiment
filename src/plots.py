@@ -120,10 +120,10 @@ def plot_polarity_f1(f1_by_model, title="F1 of each polarity"):
     plot_grouped_bars(pd.DataFrame(f1_by_model).T[POLARITIES], "F1", title)
 
 
-def plot_mixed_accuracy(tables, title="Polarity accuracy on one-polarity and mixed sentences"):
+def plot_mixed_accuracy(tables, title="Polarity accuracy, with and without opposite polarities"):
     """tables: {model name: output of evaluation.accuracy_by_mixed_sentence}."""
     table = pd.DataFrame({name: result.accuracy for name, result in tables.items()}).T
-    table.columns = ["mixed" if is_mixed else "one polarity" for is_mixed in table.columns]
+    table.columns = ["opposite polarities" if is_mixed else "no opposition" for is_mixed in table.columns]
     plot_grouped_bars(table, "accuracy", title)
 
 

@@ -142,13 +142,14 @@ def polarity_scores(units, predicted_polarities):
 
 
 def accuracy_by_mixed_sentence(units, predicted_polarities):
-    """Polarity accuracy on sentences with one polarity, and on sentences that mix several."""
+    """Polarity accuracy on sentences with both a positive and a negative aspect, and on the others."""
     keep = ~units.ambiguous.to_numpy(dtype=bool)
     clear_units = units[keep]
     predicted = np.asarray(predicted_polarities, dtype=object)[keep]
     check = clear_units.assign(
         correct=predicted == clear_units.polarity.to_numpy(dtype=object),
-        mixed_sentence=lambda table: table.groupby("sentence_id").polarity.transform("nunique") > 1,
+        mixed_sentence=lambda table: table.groupby("sentence_id").polarity.transform(
+            lambda polarities: {"positive", "negative"} <= set(polarities)).astype(bool),
     )
     return check.groupby("mixed_sentence").correct.agg(accuracy="mean", aspects="size").round(3)
 
